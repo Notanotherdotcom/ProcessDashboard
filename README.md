@@ -18,4 +18,5 @@ __Credits:__
 
 __Updates:__
 
-* v1.0.0 - first release.
+* v1.0.0 - first release
+* v1.0.1 - bugfix
