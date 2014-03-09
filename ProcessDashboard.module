@@ -1,0 +1,76 @@
+<?php
+
+/**
+* Dashboard Module v 1.0.0
+* Batch Editing and Creating of Pages in the ProcessWire Admin Panel
+*
+* @author Peter Burlingham (Pete)
+* @copyright Peter Burlingham
+* <http://www.notanotherdotcom.com>
+*
+* ProcessWire 2.x
+* Copyright (C) 2011 by Ryan Cramer
+* Licensed under GNU/GPL v2, see LICENSE.TXT
+*
+* http://www.processwire.com
+*
+*/
+
+
+class ProcessDashboard extends Process implements Module {
+
+	/**
+	 * getModuleInfo is a module required by all modules to tell ProcessWire about them
+	 *
+	 * @return array
+	 *
+	 */
+	public static function getModuleInfo() {
+
+		return array(
+			'title' => 'Process Dashboard', 
+			'version' => 100, 
+			'summary' => 'A custom dashboard page for the ProcessWire admin.',
+			'author' => 'Peter Burlingham',
+			'href' => '',
+			'singular' => true, 
+			'autoload' => false,
+			'permission' => 'dashboard',
+	        'installs' => 'ProcessHomeAdmin'
+		);
+	}
+	
+	public function init() {
+		parent::init(); 
+	}
+	
+	// The two default lines in the function below can be deleted if you want to build a normal Process module and keep everything including the markup within the module file.
+	public function execute() {
+		$t = new TemplateFile($this->config->paths->siteModules . __CLASS__ . "/dashboard.php");
+		return $t->render();
+	}
+					
+	public function ___install() {
+		// ProcessWire's admin page always has an ID of 2
+		$adminPage = $this->pages->get(2);
+		
+		// Create the dashboard page (if it doesn't already exist)
+		if (!$adminPage->children('title=dashboard')->first()->id) {		
+			$p = new Page();
+			$p->template = 'admin';
+			$p->title = 'Dashboard';
+			$p->name = 'dashboard';
+			$p->parent = $adminPage;
+			$p->process = __CLASS__;
+			$p->sort = 0; // Make sure it appears as the first in the list of pages under the admin
+			$p->save();
+		}
+		
+		// Add a permission for new roles (other than superuser) to use so that they can log into the admin and see the dashboard
+		if (!$this->permissions->get('dashboard')->id) {
+			$permission = $this->permissions->add('dashboard');
+			$permission->title = 'User can view the admin dashboard. Required for roles other than superuser that need to access the admin when the dashboard is set as the default admin page.';
+			$permission->save();
+		}
+	}
+}
