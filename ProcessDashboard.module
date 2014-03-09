@@ -29,14 +29,13 @@ class ProcessDashboard extends Process implements Module {
 
 		return array(
 			'title' => 'Process Dashboard', 
-			'version' => 100, 
+			'version' => 101, 
 			'summary' => 'A custom dashboard page for the ProcessWire admin.',
 			'author' => 'Peter Burlingham',
 			'href' => '',
 			'singular' => true, 
 			'autoload' => false,
-			'permission' => 'dashboard',
-	        'installs' => 'ProcessHomeAdmin'
+			'permission' => 'dashboard'
 		);
 	}
 	
@@ -44,8 +43,13 @@ class ProcessDashboard extends Process implements Module {
 		parent::init(); 
 	}
 	
-	// The two default lines in the function below can be deleted if you want to build a normal Process module and keep everything including the markup within the module file.
 	public function execute() {
+		// Redirect calls for the admin homepage to the dashboard (first child page)
+		if ($this->page->id == 2) {
+			$this->session->redirect($this->page->child->url); 
+		}
+		
+		###### You may edit below this line if you would like to create a normal Process module #######
 		$t = new TemplateFile($this->config->paths->siteModules . __CLASS__ . "/dashboard.php");
 		return $t->render();
 	}
@@ -53,6 +57,10 @@ class ProcessDashboard extends Process implements Module {
 	public function ___install() {
 		// ProcessWire's admin page always has an ID of 2
 		$adminPage = $this->pages->get(2);
+		
+		// We need to set the admin process to use this module's process so that it loads the first child page in the admin by default
+		$adminPage->process = __CLASS__;
+		$adminPage->save();
 		
 		// Create the dashboard page (if it doesn't already exist)
 		if (!$adminPage->children('title=dashboard')->first()->id) {		

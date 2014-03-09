@@ -12,9 +12,9 @@ To change the markup of the page, edit the files in the /site/modules/ProcessDas
 
 This module also creates a permission - "dashboard" - that you must assign to any admin-related roles you create so that when they log into the admin they can see the dashboard, otherwise they will encounter an error.
 
-__Notes:__
+__Credits:__
 
-* This module requires and installs diogo's ProcessHomeAdmin module in order to replace the default admin page.
+* This module uses some code from diogo's ProcessHomeAdmin module: https://github.com/ocorreiododiogo/ProcessHomeAdmin
 
 __Updates:__
 
