@@ -86,7 +86,7 @@ class ProcessDashboard extends Process implements Module {
         // ProcessWire's admin page always has an ID of 2
         $adminPage = $this->pages->get(2);
 
-        // We need to set the admin process to use this module's process so that it loads the first child page in the admin by default
+        // We need to set the admin process to use ProcessHome again (page list)
         $adminPage->process = 'ProcessHome';
         $adminPage->save();
 
